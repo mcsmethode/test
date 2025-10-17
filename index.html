@@ -18,114 +18,6 @@
             overflow-x: hidden;
         }
 
-        /* Config Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-        }
-
-        .modal-overlay.hidden {
-            display: none;
-        }
-
-        .modal {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 20px;
-            padding: 3rem;
-            max-width: 500px;
-            width: 90%;
-            backdrop-filter: blur(20px);
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal h2 {
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #667eea, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 2rem;
-        }
-
-        .modal p {
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .modal label {
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
-        }
-
-        .modal input {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        .modal input:focus {
-            outline: none;
-            border-color: #667eea;
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            flex: 1;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
-        }
-
         /* Hero Section mit Parallax */
         .hero {
             position: relative;
@@ -516,7 +408,6 @@
     </style>
 </head>
 <body>
-
     <nav id="navbar">
         <div class="nav-content">
             <div class="logo">VidStream</div>
@@ -559,37 +450,14 @@
 
     <script>
         let videos = [];
-        let githubConfig = {
-            owner: null,
-            repo: null
+        
+        // FEST VERDRAHTETE REPOSITORY KONFIGURATION - KEINE FRAGEN MEHR!
+        const githubConfig = {
+            owner: 'mcsmethode',  // ÄNDERE DIESE ZU DEINEM USERNAME!
+            repo: 'test'      // ÄNDERE DIESE ZU DEINEM REPO!
         };
 
-        // Config Check
-        function checkConfig() {
-            const stored = localStorage.getItem('githubRepoConfig');
-            if (stored) {
-                githubConfig = JSON.parse(stored);
-                document.getElementById('configModal').classList.add('hidden');
-                loadVideos();
-            } else {
-                document.getElementById('loadingState').style.display = 'none';
-            }
-        }
-
-        // Config speichern
-        document.getElementById('configForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const owner = document.getElementById('repoOwner').value;
-            const repo = document.getElementById('repoName').value;
-
-            githubConfig = { owner, repo };
-            localStorage.setItem('githubRepoConfig', JSON.stringify(githubConfig));
-            document.getElementById('configModal').classList.add('hidden');
-            loadVideos();
-        });
-
-        // Videos von GitHub laden
+        // Videos von GitHub laden - DIREKT OHNE FRAGEN!
         async function loadVideos() {
             document.getElementById('loadingState').style.display = 'block';
             
@@ -615,11 +483,11 @@
                     renderVideos();
                 } else {
                     document.getElementById('videoGrid').innerHTML = 
-                        '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 2rem;">Keine Videos gefunden. Gehe zum Admin-Panel, um Videos hochzuladen!</p>';
+                        '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 2rem;">Keine Videos gefunden. Stelle sicher, dass das Repository existiert und Videos enthält!</p>';
                 }
             } catch (error) {
                 document.getElementById('videoGrid').innerHTML = 
-                    '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 2rem;">Fehler beim Laden der Videos. Überprüfe deine Repository-Konfiguration.</p>';
+                    '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 2rem;">Fehler beim Laden der Videos. Überprüfe die Repository-Konfiguration im Code.</p>';
             }
 
             document.getElementById('loadingState').style.display = 'none';
@@ -719,8 +587,8 @@
             hero.style.transform = `translateY(${scrolled * 0.5}px)`;
         });
 
-        // Initial laden
-        checkConfig();
+        // SOFORT LADEN - KEINE VERZÖGERUNG!
+        loadVideos();
     </script>
 </body>
 </html>
