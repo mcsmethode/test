@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - VidStream</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 2rem 5%;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Upload Form */
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-section h2 {
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Video Management */
+        .management-section h2 {
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .video-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .video-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .video-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .video-item-info {
+            flex: 1;
+        }
+
+        .video-item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-item-meta {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .video-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+            transform: translateX(400px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .video-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .video-actions {
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .btn-delete {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>⚙ Admin Panel</h1>
+            <a href="index.html" class="back-btn">← Zurück zur Hauptseite</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalVideos">0</div>
+                <div class="stat-label">Gesamt Videos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalViews">0</div>
+                <div class="stat-label">Gesamt Aufrufe</div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h2>📤 Neues Video hochladen</h2>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="videoTitle">Video Titel</label>
+                    <input type="text" id="videoTitle" placeholder="z.B. Mein tolles Tutorial" required>
+                </div>
+                <div class="form-group">
+                    <label for="videoDuration">Dauer (MM:SS)</label>
+                    <input type="text" id="videoDuration" placeholder="z.B. 12:34" pattern="[0-9]{1,2}:[0-9]{2}" required>
+                </div>
+                <div class="form-group">
+                    <label for="videoFile">Video Datei (Optional für Demo)</label>
+                    <input type="file" id="videoFile" accept="video/*">
+                </div>
+                <button type="submit" class="btn">Video Hochladen</button>
+            </form>
+        </div>
+
+        <!-- Management Section -->
+        <div class="management-section">
+            <h2>📁 Video Verwaltung</h2>
+            <div class="video-list" id="videoList"></div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let videos = [
+            {
+                id: 1,
+                title: "Einführung in Moderne Web-Entwicklung",
+                duration: "12:34",
+                views: "1.2K",
+                date: "vor 2 Tagen"
+            },
+            {
+                id: 2,
+                title: "CSS Gradient Meisterklasse",
+                duration: "08:45",
+                views: "856",
+                date: "vor 1 Woche"
+            },
+            {
+                id: 3,
+                title: "JavaScript Animations Tutorial",
+                duration: "15:22",
+                views: "2.3K",
+                date: "vor 3 Tagen"
+            },
+            {
+                id: 4,
+                title: "Parallax Scrolling Effekte",
+                duration: "10:18",
+                views: "1.5K",
+                date: "vor 5 Tagen"
+            },
+            {
+                id: 5,
+                title: "Dark Mode Design Patterns",
+                duration: "14:56",
+                views: "3.1K",
+                date: "vor 1 Tag"
+            },
+            {
+                id: 6,
+                title: "Responsive Grid Layouts",
+                duration: "11:30",
+                views: "987",
+                date: "vor 1 Woche"
+            }
+        ];
+
+        // Videos aus localStorage laden
+        function loadVideos() {
+            const stored = localStorage.getItem('videos');
+            if (stored) {
+                videos = JSON.parse(stored);
+            }
+            renderVideos();
+            updateStats();
+        }
+
+        // Videos speichern
+        function saveVideos() {
+            localStorage.setItem('videos', JSON.stringify(videos));
+        }
+
+        // Videos rendern
+        function renderVideos() {
+            const list = document.getElementById('videoList');
+            list.innerHTML = '';
+
+            if (videos.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 2rem;">Keine Videos vorhanden. Lade dein erstes Video hoch!</p>';
+                return;
+            }
+
+            videos.forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'video-item';
+                item.innerHTML = `
+                    <div class="video-item-info">
+                        <div class="video-item-title">${video.title}</div>
+                        <div class="video-item-meta">
+                            ${video.duration} • ${video.views} Aufrufe • ${video.date}
+                        </div>
+                    </div>
+                    <div class="video-actions">
+                        <button class="btn-delete" onclick="deleteVideo(${video.id})">🗑 Löschen</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Stats aktualisieren
+        function updateStats() {
+            document.getElementById('totalVideos').textContent = videos.length;
+            
+            const totalViews = videos.reduce((sum, video) => {
+                const views = parseFloat(video.views.replace('K', '')) * (video.views.includes('K') ? 1000 : 1);
+                return sum + views;
+            }, 0);
+            
+            document.getElementById('totalViews').textContent = 
+                totalViews >= 1000 ? (totalViews / 1000).toFixed(1) + 'K' : totalViews;
+        }
+
+        // Video hochladen
+        document.getElementById('uploadForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('videoTitle').value;
+            const duration = document.getElementById('videoDuration').value;
+            
+            const newVideo = {
+                id: Date.now(),
+                title: title,
+                duration: duration,
+                views: '0',
+                date: 'gerade eben'
+            };
+            
+            videos.unshift(newVideo);
+            saveVideos();
+            renderVideos();
+            updateStats();
+            
+            showNotification('✅ Video erfolgreich hochgeladen!');
+            
+            // Form zurücksetzen
+            document.getElementById('uploadForm').reset();
+        });
+
+        // Video löschen
+        function deleteVideo(id) {
+            if (confirm('Möchtest du dieses Video wirklich löschen?')) {
+                videos = videos.filter(v => v.id !== id);
+                saveVideos();
+                renderVideos();
+                updateStats();
+                showNotification('🗑 Video wurde gelöscht');
+            }
+        }
+
+        // Notification anzeigen
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initial laden
+        loadVideos();
+    </script>
+</body>
+</html>
