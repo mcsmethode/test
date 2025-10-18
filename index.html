@@ -450,10 +450,10 @@
                 if (response.ok) {
                     const files = await response.json();
                     videos = files
-                        .filter(f => f.name.match(/\.(mp4|webm|mov)$/i))
+                        .filter(f => f.name.match(/\.(mp4|webm|mov|mp3)$/i))
                         .map(f => ({
                             id: f.sha,
-                            title: f.name.replace(/\.(mp4|webm|mov)$/i, '').replace(/_/g, ' '),
+                            title: f.name.replace(/\.(mp4|webm|mov|mp3)$/i, '').replace(/_/g, ' '),
                             url: f.download_url,
                             sha: f.sha
                         }));
